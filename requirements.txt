@@ -1,0 +1,14 @@
+chromadb
+flask
+huggingface_hub
+langchain
+langchain-classic
+langchain-community
+langchain-core
+langchain-groq
+langchain-huggingface
+langchain-text-splitters
+pandas
+sentence-transformers
+streamlit
+streamlit-shadcn-ui
