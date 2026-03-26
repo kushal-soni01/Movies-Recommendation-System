@@ -79,8 +79,8 @@ def build_documents(movies: pd.DataFrame) -> list[Document]:
             page_content=row["tags"],
             metadata={
                 "title": row["title"],
-                "genres": row["genres"],
-                "director": row["director"],
+                "genres": ", ".join(row["genres"]) if isinstance(row["genres"], list) else "",
+                "director": row["director"] or "",
             },
         )
         for _, row in movies.iterrows()
