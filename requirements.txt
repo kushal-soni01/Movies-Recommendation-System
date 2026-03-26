@@ -10,3 +10,4 @@ pandas
 python-dotenv
 sentence-transformers
 requests
+gunicorn
