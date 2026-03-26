@@ -24,6 +24,7 @@
           <label class="field">
             <span>What are you in the mood for?</span>
             <input
+              id="query-input"
               type="text"
               name="query"
               value="{{ query }}"
@@ -52,15 +53,33 @@
       <section class="results">
         {% if recommendations %}
           <div class="results-header">
-            <h2>Recommended Movies</h2>
-            <p>{{ recommendations|length }} picks generated for "{{ query }}"</p>
+            {% if is_featured_view %}
+              <h2>8 All-Time Favorites</h2>
+              <p>High-rated classics and modern standouts to explore before you search.</p>
+            {% else %}
+              <h2>Recommended Movies</h2>
+              <p>{{ recommendations|length }} picks generated for "{{ query }}"</p>
+            {% endif %}
           </div>
 
           <div class="card-grid">
             {% for movie in recommendations %}
               <article class="movie-card">
                 <div class="poster-frame">
-                  <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}">
+                  {% if movie.trailer_url %}
+                    <a
+                      class="poster-link"
+                      href="{{ movie.trailer_url }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Watch trailer for {{ movie.title }}"
+                    >
+                      <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}">
+                      <span class="poster-cta">Watch Trailer</span>
+                    </a>
+                  {% else %}
+                    <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}">
+                  {% endif %}
                 </div>
 
                 <div class="movie-meta">
@@ -86,6 +105,72 @@
           </div>
         {% endif %}
       </section>
+
+      <footer class="site-footer">
+        <p>
+          To make you watching choice perfect!!</br>Made with 💖 by
+          <a
+            href="https://github.com/kushal-soni01/Movies-Recommendation-System"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Kushal Soni
+          </a>
+          (Author)
+        </p>
+      </footer>
     </main>
+    <script>
+      (() => {
+        const input = document.getElementById("query-input");
+        if (!input) {
+          return;
+        }
+
+        const prompts = [
+          "Suggest me more movies like interstellar",
+          "Suggest me shows by duffer brothers",
+          "One-sided Love Story movies",
+          "Suggest me some good movies by Robert Downey Jr.",
+          "Movies with great sound tracks",
+          "Romantic comedy movies"
+        ];
+
+        let promptIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        const type = () => {
+          if (document.activeElement === input || input.value.trim()) {
+            setTimeout(type, 800);
+            return;
+          }
+
+          const currentPrompt = prompts[promptIndex];
+          const nextText = isDeleting
+            ? currentPrompt.slice(0, Math.max(charIndex - 1, 0))
+            : currentPrompt.slice(0, Math.min(charIndex + 1, currentPrompt.length));
+
+          input.setAttribute("placeholder", nextText);
+          charIndex = nextText.length;
+
+          let delay = isDeleting ? 42 : 72;
+
+          if (!isDeleting && nextText === currentPrompt) {
+            isDeleting = true;
+            delay = 1400;
+          } else if (isDeleting && nextText.length === 0) {
+            isDeleting = false;
+            promptIndex = (promptIndex + 1) % prompts.length;
+            delay = 280;
+          }
+
+          setTimeout(type, delay);
+        };
+
+        input.setAttribute("placeholder", "");
+        type();
+      })();
+    </script>
   </body>
 </html>

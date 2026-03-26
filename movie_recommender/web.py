@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask import Flask, jsonify, render_template, request
 
-from movie_recommender.recommender import recommend_movies
+from movie_recommender.recommender import get_featured_movies, recommend_movies
 
 
 GENRES = ["All", "Action", "Comedy", "Drama", "Horror", "Romance", "Sci-Fi", "Thriller"]
@@ -14,7 +14,14 @@ def create_app() -> Flask:
 
     @app.get("/")
     def index():
-        return render_template("index.html", genres=GENRES, recommendations=[], query="", selected_genre="All")
+        return render_template(
+            "index.html",
+            genres=GENRES,
+            recommendations=get_featured_movies(),
+            query="",
+            selected_genre="All",
+            is_featured_view=True,
+        )
 
     @app.post("/recommend")
     def recommend():
@@ -25,9 +32,10 @@ def create_app() -> Flask:
             return render_template(
                 "index.html",
                 genres=GENRES,
-                recommendations=[],
+                recommendations=get_featured_movies(),
                 query=query,
                 selected_genre=genre,
+                is_featured_view=True,
                 error="Please enter a movie, actor, genre, or mood.",
             )
 
@@ -40,6 +48,7 @@ def create_app() -> Flask:
                 recommendations=[],
                 query=query,
                 selected_genre=genre,
+                is_featured_view=False,
                 error=f"Unable to generate recommendations right now: {exc}",
             )
 
@@ -49,6 +58,7 @@ def create_app() -> Flask:
             recommendations=recommendations,
             query=query,
             selected_genre=genre,
+            is_featured_view=False,
         )
 
     @app.post("/api/recommend")
