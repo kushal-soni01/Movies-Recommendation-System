@@ -1,3 +1,7 @@
 .venv/
 .env
 db/
+Movies-Recommendation.ipynb
+docs/
+__pycache__/
+*.pyc

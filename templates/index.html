@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Movie Recommendation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">LangChain + Groq + Flask</p>
+        <h1>AI Movie Recommendation System</h1>
+        <p class="hero-copy">
+          Search by movie, actor, genre, vibe, or story theme and get richer recommendations in a proper web app.
+        </p>
+      </section>
+
+      <section class="search-panel">
+        <form action="{{ url_for('recommend') }}" method="post" class="search-form">
+          <label class="field">
+            <span>What are you in the mood for?</span>
+            <input
+              type="text"
+              name="query"
+              value="{{ query }}"
+              placeholder="Example: emotional sci-fi movies like Interstellar"
+              autocomplete="off"
+            >
+          </label>
+
+          <label class="field field-compact">
+            <span>Genre filter</span>
+            <select name="genre">
+              {% for genre in genres %}
+                <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <button type="submit">Recommend Movies</button>
+        </form>
+
+        {% if error %}
+          <div class="message error">{{ error }}</div>
+        {% endif %}
+      </section>
+
+      <section class="results">
+        {% if recommendations %}
+          <div class="results-header">
+            <h2>Recommended Movies</h2>
+            <p>{{ recommendations|length }} picks generated for "{{ query }}"</p>
+          </div>
+
+          <div class="card-grid">
+            {% for movie in recommendations %}
+              <article class="movie-card">
+                <div class="poster-frame">
+                  <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}">
+                </div>
+
+                <div class="movie-meta">
+                  <h3>{{ movie.title }}</h3>
+
+                  {% if movie.reason %}
+                    <p class="reason">{{ movie.reason }}</p>
+                  {% else %}
+                    <p class="reason">{{ movie.display_text }}</p>
+                  {% endif %}
+
+                  <div class="stats">
+                    <span>&#11088; {{ movie.rating if movie.rating is not none else "N/A" }}</span>
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <h2>Start with anything movie-related</h2>
+            <p>Try a title, actor, genre, director, or even a mood like "dark mystery with a twist".</p>
+          </div>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
