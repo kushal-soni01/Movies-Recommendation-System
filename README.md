@@ -1,3 +1,9 @@
+---
+title: Movies Recommendation System
+sdk: docker
+app_port: 7860
+---
+
 # Movies Recommendation System
 
 An AI-powered movie and TV recommendation web app built with Flask, LangChain, Groq, ChromaDB, and TMDB.
@@ -120,6 +126,31 @@ Then open:
 http://127.0.0.1:5000
 ```
 
+## Deploy to Hugging Face Spaces
+
+This repo is ready for a Docker Space deployment.
+
+1. Create a new Space on Hugging Face.
+2. Choose `Docker` as the Space SDK.
+3. Push this repository to the Space.
+4. Add these Space secrets:
+
+```text
+GROQ_API_KEY
+TMDB_API_KEY
+```
+
+Optional Space variables:
+
+```text
+GROQ_MODEL=llama-3.3-70b-versatile
+TMDB_BASE_URL=https://api.themoviedb.org/3
+TMDB_IMAGE_BASE_URL=https://image.tmdb.org/t/p/w500
+RETRIEVER_K=5
+```
+
+The Docker image installs dependencies, copies the app files, and includes the prebuilt `db/` Chroma vector store so the Space can start without rebuilding embeddings during image creation. The app is then served with `gunicorn` on port `7860`, which matches Hugging Face Spaces expectations.
+
 ## Example Queries
 
 - `Suggest me more movies like Interstellar`
@@ -133,6 +164,7 @@ http://127.0.0.1:5000
 - Only titles with valid posters are displayed in recommendation cards.
 - Posters open the trailer in a new tab when TMDB provides one.
 - The notebook used during experimentation is no longer required for the app runtime.
+- For Hugging Face Spaces, configure API keys in the Space settings instead of committing a `.env` file.
 
 ## Author
 

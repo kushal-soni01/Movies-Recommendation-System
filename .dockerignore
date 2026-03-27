@@ -1,0 +1,9 @@
+.git
+.venv
+.env
+__pycache__\
+*.pyc
+*.pyo
+*.pyd
+docs
+Movies-Recommendation.ipynb
