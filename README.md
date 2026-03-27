@@ -111,7 +111,7 @@ python -m scripts.build_vector_store
 Run the Flask app locally:
 
 ```powershell
-python app.py
+flask run
 ```
 
 Then open:
